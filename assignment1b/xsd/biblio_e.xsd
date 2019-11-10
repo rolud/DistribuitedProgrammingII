@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	    targetNamespace="http://pad.polito.it/dp2/biblio"
+	    xmlns:tns="http://pad.polito.it/dp2/biblio" >
+
+	<element name="biblio">
+		<complexType>
+			<sequence>
+				<element name="items">
+					<complexType>
+						<sequence>
+							<element name="book" type="tns:BookType" minOccurs="0" maxOccurs="unbounded" />
+							<element name="article" type="tns:ArticleType" minOccurs="0" maxOccurs="unbounded" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="journals">
+					<complexType>
+						<sequence>
+							<element name="journal" type="tns:JournalType" minOccurs="0" maxOccurs="unbounded">
+								<unique name="issueUniqueness">
+									<selector xpath="issue" />
+									<field xpath="@year" />
+									<field xpath="@number" />
+								</unique>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+			
+		</complexType>
+		
+		<key name="itemKey">
+			<selector xpath="items/*"/>
+			<field xpath="@id" />
+		</key>
+		<keyref name="itemReference" refer="tns:itemKey">
+			<selector xpath="items/*/citedBy" />
+			<field xpath="." />
+		</keyref>
+		
+		<key name="journalKey">
+			<selector xpath="journals/journal"/>
+			<field xpath="@issn" />
+		</key>
+		<keyref name="journalRef" refer="tns:journalKey">
+			<selector xpath="items/article" />
+			<field xpath="@journal" />
+		</keyref>
+		
+		<key name="issueKey">
+			<selector xpath="journals/journal/issue"/>
+			<field xpath="@id" />
+		</key>
+		<keyref name="issueRef" refer="tns:issueKey">
+			<selector xpath="items/article" />
+			<field xpath="@issue" />
+		</keyref>
+		
+		<unique name="journalUniqueness">
+			<selector xpath="journals/journal" />
+			<field xpath="@issn"/>
+		</unique>
+		
+		<unique name="bookUniqueness">
+			<selector xpath="items/book" />
+			<field xpath="@isbn"/>
+		</unique>
+	</element>
+	
+	<complexType name="BibliographyItemType">
+		<sequence>
+			<element name="author" type="string" maxOccurs="unbounded"/>
+			<element name="title" type="string" />
+			<element name="subtitle" type="string" minOccurs="0"/>
+			<element name="citedBy" type="integer" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+	</complexType> 
+	
+	<complexType name="BookType">
+		<complexContent>
+			<extension base="tns:BibliographyItemType">	
+				<sequence>
+					<element name="publisher" type="string" />
+				</sequence>
+				<attribute name="isbn" type="tns:ISBNCode" use="required" />
+				<attribute name="year" type="gYear" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="ArticleType">
+		<complexContent>
+			<extension base="tns:BibliographyItemType">	
+				<attribute name="journal" type="tns:ISSNCode" use="required" />
+				<attribute name="issue" type="positiveInteger" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="JournalType">
+		<sequence>
+			<element name="title" type="string" />
+			<element name="publisher" type="string" />
+			<element name="issue" minOccurs="0" maxOccurs="unbounded" >
+				<complexType>
+					<attribute name="id" type="positiveInteger" use="required" />
+					<attribute name="year" type="gYear" use="required" />
+					<attribute name="number" type="positiveInteger" use="required" />
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="issn" type="tns:ISSNCode" use="required" />
+	</complexType>
+	
+	
+	
+	<simpleType name="ISBNCode">
+		<restriction base="string">
+		    <pattern value="[0-9]{13}" />
+			<pattern value="[0-9]{9}([0-9]|X)" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="ISSNCode">
+		<restriction base="string">
+			<pattern value="[0-9]{4}-[0-9]{3}([0-9]|X)"/>
+		</restriction>
+	</simpleType>
+ </schema>
