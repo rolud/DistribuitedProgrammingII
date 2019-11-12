@@ -106,7 +106,7 @@
 			<element name="publisher" type="string" />
 			<element name="issue" minOccurs="0" maxOccurs="unbounded" >
 				<complexType>
-					<attribute name="id" type="positiveInteger" use="required" />
+					<attribute name="id" type="integer" use="required" />
 					<attribute name="year" type="gYear" use="required" />
 					<attribute name="number" type="positiveInteger" use="required" />
 				</complexType>
