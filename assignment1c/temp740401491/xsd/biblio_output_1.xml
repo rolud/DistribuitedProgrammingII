@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:biblio xmlns:ns2="http://pad.polito.it/dp2/biblio"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://pad.polito.it/dp2/biblio biblio_e.xsd ">
+    <items>
+        <book isbn="9788845272" year="1977Z" id="1">
+            <author>J.R.R. Tolkien</author>
+            <title>The Silmarillion</title>
+            <citedBy>0</citedBy>
+            <citedBy>2</citedBy>
+            <publisher>Bompiani</publisher>
+        </book>
+        <book isbn="9788845268" year="1937Z" id="0">
+            <author>J.R.R. Tolkien</author>
+            <title>The Hobbit</title>
+            <subtitle>There and Back Again</subtitle>
+            <citedBy>2</citedBy>
+            <publisher>Bompiani</publisher>
+        </book>
+        <book isbn="9788848603" year="1954Z" id="2">
+            <author>J.R.R. Tolkien</author>
+            <title>The Lord Of The Ring</title>
+            <subtitle>There and Back Again</subtitle>
+            <publisher>Bompiani</publisher>
+        </book>
+        <article journal="1059-1028" issue="10" id="3">
+            <author>Lily Hay Newman</author>
+            <title>As 5G Rolls Out, Troubling New Security Flwas Emerge</title>
+        </article>
+        <article journal="1059-1028" issue="10" id="4">
+            <author>Gregory Barber</author>
+            <title>The Pursuit of Creativity Can Make Algorithms Much Smarter</title>
+        </article>
+    </items>
+    <journals>
+        <journal issn="1059-1028">
+            <title>Wired</title>
+            <publisher>Condé Nast</publisher>
+            <issue id="0" year="2019Z" number="4"/>
+            <issue id="1" year="2019Z" number="9"/>
+            <issue id="2" year="2019Z" number="2"/>
+            <issue id="3" year="2019Z" number="1"/>
+            <issue id="4" year="2019Z" number="3"/>
+            <issue id="5" year="2019Z" number="8"/>
+            <issue id="6" year="2019Z" number="7"/>
+            <issue id="7" year="2019Z" number="5"/>
+            <issue id="8" year="2019Z" number="6"/>
+            <issue id="9" year="2019Z" number="10"/>
+            <issue id="10" year="2019Z" number="11"/>
+            <issue id="11" year="2019Z" number="12"/>
+        </journal>
+    </journals>
+</ns2:biblio>
