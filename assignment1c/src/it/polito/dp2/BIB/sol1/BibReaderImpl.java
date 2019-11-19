@@ -45,7 +45,7 @@ public class BibReaderImpl implements BibReader {
 		
 		// set citing items refs
 		biblio.getItems().getBook().forEach(b -> {
-			BookReaderImpl book = books.get(b.getId());
+			BookReaderImpl book = books.get(b.getId().intValue());
 			b.getCitedBy().forEach(id -> {
 				
 				if (books.containsKey(id.intValue())) 
@@ -59,7 +59,7 @@ public class BibReaderImpl implements BibReader {
 		});
 		
 		biblio.getItems().getArticle().forEach(a -> {
-			ArticleReaderImpl article = articles.get(a.getId());
+			ArticleReaderImpl article = articles.get(a.getId().intValue());
 			a.getCitedBy().forEach(id -> {
 				
 				if (books.containsKey(id.intValue())) 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="1" failures="0" hostname="dp2-student" name="it.polito.dp2.BIB.ass1.tests.BibTests" skipped="0" tests="0" time="1.14" timestamp="2019-11-19T13:37:53">
+<testsuite errors="0" failures="0" hostname="dp2-student" name="it.polito.dp2.BIB.ass1.tests.BibTests" skipped="0" tests="2" time="0.704" timestamp="2019-11-19T16:14:46">
   <properties>
     <property name="java.vendor" value="Oracle Corporation" />
     <property name="lib.dir" value="/home/dp2/DP2/labs/assignment1c/lib" />
@@ -24,7 +24,7 @@
     <property name="sun.boot.library.path" value="/usr/lib/jvm/jdk1.8.0_141/jre/lib/i386" />
     <property name="ant.project.default-target" value="build" />
     <property name="ant.project.name" value="BIB-1" />
-    <property name="it.polito.dp2.BIB.sol1.BibInfo.file" value="/home/dp2/DP2/labs/assignment1c/temp1744369573/out1593998029.xml" />
+    <property name="it.polito.dp2.BIB.sol1.BibInfo.file" value="/home/dp2/DP2/labs/assignment1c/temp46824650/out917823726.xml" />
     <property name="java.version" value="1.8.0_141" />
     <property name="user.timezone" value="" />
     <property name="BibInfo.BibReaderFactory" value="it.polito.dp2.BIB.Random.BibReaderFactoryImpl" />
@@ -42,7 +42,7 @@
     <property name="java.vm.info" value="mixed mode" />
     <property name="ant.file" value="/home/dp2/DP2/labs/assignment1c/build.xml" />
     <property name="os.version" value="4.15.0-34-generic" />
-    <property name="temp.dir" value="/home/dp2/DP2/labs/assignment1c/temp1744369573" />
+    <property name="temp.dir" value="/home/dp2/DP2/labs/assignment1c/temp46824650" />
     <property name="path.separator" value=":" />
     <property name="java.vm.version" value="25.141-b15" />
     <property name="ant.library.dir" value="/opt/apache-ant-1.9.13/lib" />
@@ -58,7 +58,7 @@
     <property name="java.vm.vendor" value="Oracle Corporation" />
     <property name="xsd.sol" value="/home/dp2/DP2/labs/assignment1c/xsd/biblio_e.xsd" />
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner it.polito.dp2.BIB.ass1.tests.BibTests skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false formatter=org.apache.tools.ant.taskdefs.optional.junit.SummaryJUnitResultFormatter showoutput=false outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=false formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,/home/dp2/DP2/labs/assignment1c/testout.xml formatter=org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter crashfile=/home/dp2/DP2/labs/assignment1c/junitvmwatcher2774019230222768602.properties propsfile=/home/dp2/DP2/labs/assignment1c/junit369990778715124078.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner it.polito.dp2.BIB.ass1.tests.BibTests skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false formatter=org.apache.tools.ant.taskdefs.optional.junit.SummaryJUnitResultFormatter showoutput=false outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=false formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,/home/dp2/DP2/labs/assignment1c/testout.xml formatter=org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter crashfile=/home/dp2/DP2/labs/assignment1c/junitvmwatcher7499222295807040004.properties propsfile=/home/dp2/DP2/labs/assignment1c/junit6310064821861748796.properties" />
     <property name="java.class.path" value="/home/dp2/DP2/labs/assignment1c/lib/BIB.jar:/home/dp2/DP2/labs/assignment1c/lib/BIBRandom.jar:/home/dp2/DP2/labs/assignment1c/build:/home/dp2/DP2/labs/assignment1c/lib/ass1.jar:/home/dp2/DP2/labs/assignment1c/lib/junit-4.12.jar:/home/dp2/DP2/labs/assignment1c/lib/hamcrest-core-1.3.jar:/opt/apache-ant-1.9.13/lib/ant-launcher.jar:/opt/apache-ant-1.9.13/lib/ant.jar:/opt/apache-ant-1.9.13/lib/ant-junit.jar:/opt/apache-ant-1.9.13/lib/ant-junit4.jar" />
     <property name="ant.version" value="Apache Ant(TM) version 1.9.13 compiled on July 10 2018" />
     <property name="test.class" value="it.polito.dp2.BIB.ass1.tests.BibTests" />
@@ -71,12 +71,12 @@
     <property name="debuglevel" value="source,lines,vars" />
     <property name="java.io.tmpdir" value="/tmp" />
     <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/" />
-    <property name="temp.xmlfile" value="/home/dp2/DP2/labs/assignment1c/temp1744369573/out1593998029.xml" />
+    <property name="temp.xmlfile" value="/home/dp2/DP2/labs/assignment1c/temp46824650/out917823726.xml" />
     <property name="os.arch" value="i386" />
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment" />
     <property name="java.ext.dirs" value="/usr/lib/jvm/jdk1.8.0_141/jre/lib/ext:/usr/java/packages/lib/ext" />
     <property name="ant.file.type.BIB-1" value="file" />
-    <property name="user.dir" value="/home/dp2/DP2/labs/assignment1c/temp1744369573" />
+    <property name="user.dir" value="/home/dp2/DP2/labs/assignment1c/temp46824650" />
     <property name="line.separator" value="&#xa;" />
     <property name="java.vm.name" value="Java HotSpot(TM) Server VM" />
     <property name="ant.file.BIB-1" value="/home/dp2/DP2/labs/assignment1c/build.xml" />
@@ -89,19 +89,32 @@
     <property name="src.dir" value="/home/dp2/DP2/labs/assignment1c/src" />
     <property name="ant.project.invoked-targets" value="runFuncTest" />
   </properties>
-  <testcase classname="junit.framework.TestSuite" name="it.polito.dp2.BIB.ass1.tests.BibTests" time="0.0">
-    <error type="java.lang.NullPointerException">java.lang.NullPointerException
-	at it.polito.dp2.BIB.sol1.BibReaderImpl.lambda$null$7(BibReaderImpl.java:69)
-	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at it.polito.dp2.BIB.sol1.BibReaderImpl.lambda$new$8(BibReaderImpl.java:63)
-	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at it.polito.dp2.BIB.sol1.BibReaderImpl.&lt;init&gt;(BibReaderImpl.java:61)
-	at it.polito.dp2.BIB.sol1.BibReaderFactory.newBibReader(BibReaderFactory.java:41)
-	at it.polito.dp2.BIB.ass1.tests.BibTests.setUpBeforeClass(BibTests.java:35)
-</error>
-  </testcase>
+  <testcase classname="it.polito.dp2.BIB.ass1.tests.BibTests" name="testGetItems" time="0.008" />
+  <testcase classname="it.polito.dp2.BIB.ass1.tests.BibTests" name="testGetJournals" time="0.005" />
   <system-out><![CDATA[Reference BibReader: Using file: xsd/biblio.xml
-FILENAME /home/dp2/DP2/labs/assignment1c/temp1744369573/out1593998029.xml
+FILENAME /home/dp2/DP2/labs/assignment1c/temp46824650/out917823726.xml
+Comparing biblio item Achievement of secure Internet access to fieldbus systems
+  citing items:
+     article Formal Vulnerability Analysis of a Security System for Remote Fieldbus Access
+Comparing biblio item Formal Vulnerability Analysis of a Security System for Remote Fieldbus Access
+  citing items:
+Comparing biblio item Unix network programming
+  citing items:
+Comparing journal Microprocessors and Microsystems
+  issue number 7 have 1 articles
+Comparing journal IEEE Transactions on Industrial Informatics
+  issue number 1 have 0 articles
+  issue number 2 have 0 articles
+  issue number 3 have 0 articles
+  issue number 4 have 0 articles
+  issue number 5 have 0 articles
+  issue number 6 have 0 articles
+  issue number 7 have 1 articles
+  issue number 8 have 0 articles
+  issue number 9 have 0 articles
+  issue number 10 have 0 articles
+  issue number 11 have 0 articles
+  issue number 12 have 0 articles
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
