@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:biblio xmlns:tns="http://pad.polito.it/dp2/biblio"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://pad.polito.it/dp2/biblio biblio_e.xsd ">
+            
+	<items>
+		<book id="1" isbn="9788879591379" year="1991">
+			<author>Mazzoldi</author>
+			<author>Nigro</author>
+			<author>Voci</author>
+			<title>Fisica I</title>
+			<publisher>EdiSES</publisher>
+		</book>    
+		
+		
+		
+		<book id="2" isbn="9788891612922" year="2015">
+			<author>G. Cabodi</author>
+			<author>P. E. Camurati</author>
+			<author>P. Pasini</author>
+			<author>D. Patti</author>
+			<author>D. Vendraminetto</author>
+			<title>Ricorsione e problem-solving</title>
+			<subtitle>Strategie algoritmiche in linguaggio C</subtitle>
+			<publisher>Apogeo</publisher>
+		</book>
+		
+		<book id="3" isbn="978891900X" year="2015">
+			<author>R. Sedgewick</author>
+			<title>Algoritmi in C</title>
+			<subtitle>Quarta edizione</subtitle>
+			<citedBy>2</citedBy>
+			<publisher>Pearson</publisher>
+		</book>
+		
+		<article id="4" journal="0036-8075" issue="5">
+			<author>D. Bressanini</author>
+			<title>La conservazione delle uova</title>
+		</article>
+		
+		<article id="5" journal="0036-8733" issue="15">
+			<author>A. Einstein</author>
+			<title>Zur Quantentheorie der Strahlung</title>
+			<citedBy>6</citedBy>
+		</article>
+	
+	
+		<article id="6" journal="0036-8733" issue="19">
+			<author>A. Einstein</author>
+			<title>Kosmologische Betrachtungen zur allgemeinen Relativitätstheorie</title>
+		</article>	
+	</items>
+	<journals>
+		<journal issn="0036-8075">
+			<title>Science Magazine</title>
+			<publisher>AAAS</publisher>
+			<issue id="1" number="1" year="2019" />
+			<issue id="2" number="2" year="2019" />
+			<issue id="3" number="3" year="2019" />
+			<issue id="4" number="4" year="2019" />
+			<issue id="5" number="5" year="2019" />
+			<issue id="6" number="6" year="2019" />
+			<issue id="7" number="7" year="2019" />
+			<issue id="8" number="8" year="2019" />
+			<issue id="9" number="9" year="2019" />
+			<issue id="10" number="10" year="2019" />
+			<issue id="11" number="11" year="2019" />
+			<issue id="12" number="12" year="2019" />
+		</journal>
+		
+		<journal issn="0036-8733">
+			<title>Scientific American</title>
+			<publisher>Springer Nature</publisher>
+			<issue id="13" number="1" year="1921" />
+			<issue id="14" number="2" year="1921" />
+			<issue id="15" number="3" year="1921" />
+			<issue id="16" number="4" year="1921" />
+			<issue id="17" number="5" year="1921" />
+			<issue id="18" number="6" year="1921" />
+			<issue id="19" number="7" year="1921" />
+			<issue id="20" number="8" year="1921" />
+			<issue id="21" number="9" year="1921" />
+			<issue id="22" number="10" year="1921" />
+			<issue id="23" number="11" year="1921" />
+			<issue id="24" number="12" year="1921" />
+		</journal>
+	</journals>
+	
+	
+</tns:biblio>

@@ -1,5 +1,6 @@
 package it.polito.dp2.BIB.sol1;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import it.polito.dp2.BIB.BookReader;
@@ -16,6 +17,7 @@ public class BookReaderImpl extends ItemReaderImpl implements BookReader {
 		super.title = book.getTitle();
 		super.subtitle = book.getSubtitle();
 		super.authors = book.getAuthor().toArray(new String[book.getAuthor().size()]);
+		super.citingElements = new HashSet<ItemReader>();
 		this.isbn = book.getTitle();
 		this.publisher = book.getPublisher();
 		this.year = book.getYear().getYear();

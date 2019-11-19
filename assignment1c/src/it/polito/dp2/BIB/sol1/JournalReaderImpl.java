@@ -20,9 +20,12 @@ public class JournalReaderImpl implements JournalReader {
 		this.title = journal.getTitle();
 		this.publisher = journal.getPublisher();
 		this.issues = new HashSet<IssueReaderImpl>();
-		journal.getIssue().forEach(issue -> {
-			this.issues.add(new IssueReaderImpl(issue, this));
-		});
+		journal.getIssue().forEach(i -> this.issues.add(new IssueReaderImpl(i, this)));
+		
+	}
+	
+	protected Set<IssueReaderImpl> getIssues() {
+		return this.issues;
 	}
 	
 	@Override

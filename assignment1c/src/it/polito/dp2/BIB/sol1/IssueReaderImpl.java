@@ -23,6 +23,10 @@ public class IssueReaderImpl implements IssueReader {
 		this.articles = new HashSet<ArticleReader>();
 	}
 	
+	protected void addArticle(ArticleReader article) {
+		this.articles.add(article);
+	}
+	
 	@Override
 	public Set<ArticleReader> getArticles() {
 		return articles;

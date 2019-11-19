@@ -31,5 +31,9 @@ public class ItemReaderImpl implements ItemReader {
 	public String getTitle() {
 		return this.title;
 	}
+	
+	protected void addCitingElements(ItemReader item) {
+		this.citingElements.add(item);
+	}
 
 }
