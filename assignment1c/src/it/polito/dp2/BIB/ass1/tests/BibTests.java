@@ -69,13 +69,7 @@ public class BibTests {
 
 	// private method for comparing two ItemReader objects
 	protected void compareItemReader(ItemReader rir, ItemReader tir) {
-		// check the ItemReaders are not null
-		assertNotNull("internal tester error: null item reader", rir);
-		assertNotNull("unexpected null item reader", tir);
-
-		System.out.println("Comparing biblio item " + rir.getTitle());
-
-		// check the ItemReaders return the same data
+		// check the ItemReaders are not null and return the same data
 		compareTitleSubtitleAuhor(rir, tir, " item ");
 
 		List<Iterator<ItemReader>> list = startComparison(rir.getCitingItems(), tir.getCitingItems(), "citing items");
@@ -92,26 +86,36 @@ public class BibTests {
 		}
 	}
 
-	private void compareArticleOrBook(ItemReader rItem, ItemReader tItem) {
-		
+	// compares the article or book specific fields of two item readers
+	private void compareArticleOrBook(ItemReader rItem, ItemReader tItem) {	
 		if (rItem instanceof BookReader) {
 			System.out.println("     book "+ rItem.getTitle());
-			compareString(((BookReader) rItem).getISBN(), ((BookReader) tItem).getISBN(), " book reader ISBN ");
-			compareString(((BookReader) rItem).getPublisher(), ((BookReader) tItem).getPublisher(),
-					" book reader Publisher ");
-			assertEquals("wrong publication year ", ((BookReader) rItem).getYear(), ((BookReader) tItem).getYear());
+			assertTrue("wrong type of item reader (should be BookReader)", tItem instanceof BookReader);
+			BookReader rBookReader = (BookReader) rItem;
+			BookReader tBookReader = (BookReader) tItem;
+			compareString(rBookReader.getISBN(), tBookReader.getISBN(), " book reader ISBN ");
+			compareString(rBookReader.getPublisher(), tBookReader.getPublisher(), " book reader Publisher ");
+			assertEquals("wrong publication year ", rBookReader.getYear(), tBookReader.getYear());
 		} else if (rItem instanceof ArticleReader) {
 			System.out.println("     article "+ rItem.getTitle());
-			compareString(((ArticleReader) rItem).getJournal().getISSN(),
-					((ArticleReader) tItem).getJournal().getISSN(), " article reader ISSN");
-			assertEquals("wrong article reader issue number", ((ArticleReader) rItem).getIssue().getNumber(),
-					((ArticleReader) tItem).getIssue().getNumber());
+			assertTrue("wrong type of item reader (should be ArticleReader)", tItem instanceof ArticleReader);
+			ArticleReader rArticleReader = (ArticleReader) rItem;
+			ArticleReader tArticleReader = (ArticleReader) tItem;
+			compareString(rArticleReader.getJournal().getISSN(), tArticleReader.getJournal().getISSN(), " article reader ISSN");
+			assertEquals("wrong article reader issue number", rArticleReader.getIssue().getNumber(), tArticleReader.getIssue().getNumber());
 		}
 	}
 
+	// checks two item readers are not null and compares their title, subtitle, and authors
 	protected void compareTitleSubtitleAuhor(ItemReader rItem, ItemReader tItem, String meaning) {
+		// check the ItemReaders are not null
+		assertNotNull("internal tester error: null item reader", rItem);
+		assertNotNull("unexpected null item reader", tItem);
+		
+		System.out.println("Comparing "+ meaning + " " + rItem.getTitle());
+
 		compareString(rItem.getTitle(), tItem.getTitle(), meaning + " title");
-		assertTrue("lists of authors do not match ", compareStringArray(rItem.getAuthors(), tItem.getAuthors()));
+		assertTrue("lists of authors do not match ", compareStringArray(rItem.getAuthors(), tItem.getAuthors()," authors"));
 		if(rItem.getSubtitle()!=null) compareString(rItem.getSubtitle(), tItem.getSubtitle(), meaning + " subtitle");
 	}
 
@@ -145,6 +149,7 @@ public class BibTests {
 
 	}
 
+	// private method for comparing two JournalReader objects
 	private void compareJournals(JournalReader refJR, JournalReader testJR) {
 		int since = 0;
 		int to = 9999;
@@ -153,13 +158,18 @@ public class BibTests {
 		assertNotNull("unexpected null journal reader", testJR);
 
 		System.out.println("Comparing journal " + refJR.getTitle());
-
+		
+		// compare main fields
 		compareJournalStrings(refJR, testJR, " journal ");
+		
+		// compare issues
+		Set<IssueReader> ris = refJR.getIssues(since, to);
+		Set<IssueReader> tis = testJR.getIssues(since, to);
+		
+		assertNotNull("internal tester error: null issue set", ris);
+		assertNotNull("unexpected null issue set", tis);
 
-		assertNotNull("unexpected null issue issue set", testJR.getIssues(since, to));
-
-		assertEquals("wrong number of journal issues ", refJR.getIssues(since, to).size(),
-				testJR.getIssues(since, to).size());
+		assertEquals("wrong number of journal issues ", ris.size(), tis.size());
 
 		// create TreeSets of elements, using the comparator for sorting, one for
 		// reference and one for implementation under test
@@ -172,36 +182,39 @@ public class BibTests {
 		Iterator<IssueReader> listRef = rts.iterator();
 		Iterator<IssueReader> listTest = tts.iterator();
 
+		// compare issues one by one
 		while (listRef.hasNext() && listTest.hasNext()) {
 			IssueReader refIssue = listRef.next();
 			IssueReader testIssue = listTest.next();
 
-			System.out.println("  issue number "+ refIssue.getNumber()+" have "+refIssue.getArticles().size()+ " articles");
-			compareIssueReaders(refIssue, testIssue);
+			
+			compareIssueReader(refIssue, testIssue);
 		}
 
 	}
 
-	private void compareIssueReaders(IssueReader refIssue, IssueReader testIssue) {
-		
+	// private method for comparing two IssueReader objects
+	private void compareIssueReader(IssueReader refIssue, IssueReader testIssue) {
+		// check the IssueReaders are not null
+		assertNotNull("internal tester error: null issue reader", refIssue);	
 		assertNotNull("unexpected null issue reader", testIssue);
-		assertEquals("wrong issue number ", refIssue.getNumber(), testIssue.getNumber());
-		assertEquals("wrong issue year in journals", refIssue.getYear(), testIssue.getYear());
 
+		// compare issue number and year
+		assertEquals("wrong issue number ", refIssue.getNumber(), testIssue.getNumber());
+		assertEquals("wrong issue year ", refIssue.getYear(), testIssue.getYear());
+
+		// check the issue readers return the same articles
 		Set<ArticleReader> rps = refIssue.getArticles();
 		Set<ArticleReader> tps = testIssue.getArticles();
-
 		
-		
-		// compare the returned sets
 		List<Iterator<ArticleReader>> list = startComparison(rps, tps, " Articles ");
 		if (list != null) {
 			Iterator<ArticleReader> ri = list.get(0);
 			Iterator<ArticleReader> ti = list.get(1);
 			while (ri.hasNext() && ti.hasNext()) {
-				ArticleReader rplace = ri.next();
-				ArticleReader tplace = ti.next();
-				compareTitleSubtitleAuhor(rplace, tplace, " articles ");
+				ArticleReader rar = ri.next();
+				ArticleReader tar = ti.next();
+				compareTitleSubtitleAuhor(rar, tar, " articles ");
 			}
 		}
 
@@ -216,28 +229,62 @@ public class BibTests {
 	
 	class ItemReaderComparator implements Comparator<ItemReader> {
 		public int compare(ItemReader f0, ItemReader f1) {
-			return f0.getTitle().compareTo(f1.getTitle());
+			if (f0 == f1)
+				return 0;
+			if (f0 == null)
+				return -1;
+			if (f1 == null)
+				return 1;
+			String title0 = f0.getTitle();
+			String title1 = f1.getTitle();
+			if (title0 == title1)
+				return 0;
+			if (title0 == null)
+				return -1;
+			if (title1 == null)
+				return 1;
+			return title0.compareTo(title1);
 		}
 	}
 
 	class JournalReaderComparator implements Comparator<JournalReader> {
 		public int compare(JournalReader f0, JournalReader f1) {
-			return f0.getISSN().compareTo(f1.getISSN());
+			if (f0 == f1)
+				return 0;
+			if (f0 == null)
+				return -1;
+			if (f1 == null)
+				return 1;
+			String issn0 = f0.getISSN();
+			String issn1 = f1.getISSN();
+			if (issn0 == issn1)
+				return 0;
+			if (issn0 == null)
+				return -1;
+			if (issn1 == null)
+				return 1;
+			return issn0.compareTo(issn1);
 		}
 	}
 
 	class IssueReaderComparator implements Comparator<IssueReader> {
 		public int compare(IssueReader f0, IssueReader f1) {
-			int i = (f0.getNumber() - f1.getNumber());
-			if (i != 0)
-				return i;
-			return f0.getYear() - (f1.getYear());
+			if (f0 == f1)
+				return 0;
+			if (f0 == null)
+				return -1;
+			if (f1 == null)
+				return 1;
+			int numberDiff = f0.getNumber() - f1.getNumber();
+			if (numberDiff != 0)
+				return numberDiff;
+			return f0.getYear() - f1.getYear();
 		}
 	}
 
 	
-	// method for comparing two strings arrays that should be non-null
-	public static boolean compareStringArray(String[] rs, String[] ts) {
+	// method for comparing two strings arrays
+	public static boolean compareStringArray(String[] rs, String[] ts, String meaning) {
 		if (rs == ts)
 			return true;
 
@@ -249,7 +296,11 @@ public class BibTests {
 			return false;
 
 		for (int i = 0; i < n; i++) {
-			if (!rs[i].equals(ts[i]))
+			String r=rs[i];
+			String t=ts[i];
+			assertNotNull("internal tester error: null string in array of "+meaning, r);
+			assertNotNull("unexpected null string in array of "+meaning, t);
+			if (!r.equals(t))
 				return false;
 		}
 
@@ -258,7 +309,7 @@ public class BibTests {
 
 	// method for comparing two strings that should be non-null
 	public void compareString(String rs, String ts, String meaning) {
-		assertNotNull(rs);
+		assertNotNull("Unexpected null reference string "+meaning, rs);
 		assertNotNull("null " + meaning, ts);
 		assertEquals("wrong " + meaning, rs, ts);
 	}
