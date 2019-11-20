@@ -18,7 +18,7 @@ public class BookReaderImpl extends ItemReaderImpl implements BookReader {
 		super.subtitle = book.getSubtitle();
 		super.authors = book.getAuthor().toArray(new String[book.getAuthor().size()]);
 		super.citingElements = new HashSet<ItemReader>();
-		this.isbn = book.getTitle();
+		this.isbn = book.getIsbn();
 		this.publisher = book.getPublisher();
 		this.year = book.getYear().getYear();
 	}

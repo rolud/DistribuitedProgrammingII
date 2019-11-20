@@ -35,7 +35,7 @@ public class BibReaderImpl implements BibReader {
 		});
 		
 		// set article refs in issue
-				articles.values().forEach(a -> {
+		articles.values().forEach(a -> {
 			JournalReaderImpl j = journals.get(a.getJournal().getISSN());
 			j.getIssues().forEach(i -> {
 				if (a.getJournal().getISSN().equals(j.getISSN()) && a.getIssue().getYear() == i.getYear() && a.getIssue().getNumber() == i.getNumber())
@@ -84,7 +84,6 @@ public class BibReaderImpl implements BibReader {
 
 	@Override
 	public Set<ItemReader> getItems(String keyword, int since, int to) {
-		// TODO Auto-generated method stub
 		Set<ItemReader> items = new HashSet<>();
 		if (keyword == null) {
 			items.addAll(
