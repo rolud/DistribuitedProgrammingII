@@ -13,7 +13,7 @@ import it.polito.dp2.BIB.JournalReader;
 public class Ass1cMainTester {
 	public static void main (String args[]) throws BibReaderException {
 		System.setProperty("it.polito.dp2.BIB.BibReaderFactory", "it.polito.dp2.BIB.sol1.BibReaderFactory");
-		System.setProperty("it.polito.dp2.BIB.sol1.BibInfo.file", "xsd/biblio_e_<Error.xml");
+		System.setProperty("it.polito.dp2.BIB.sol1.BibInfo.file", "xsd/biblio_e_error.xml");
 		BibReader tester;
 		
 		tester = BibReaderFactory.newInstance().newBibReader();

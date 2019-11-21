@@ -95,7 +95,7 @@
 		<complexContent>
 			<extension base="tns:BibliographyItemType">	
 				<attribute name="journal" type="tns:ISSNCode" use="required" />
-				<attribute name="issue" type="positiveInteger" use="required" />
+				<attribute name="issue" type="integer" use="required" />
 			</extension>
 		</complexContent>
 	</complexType>

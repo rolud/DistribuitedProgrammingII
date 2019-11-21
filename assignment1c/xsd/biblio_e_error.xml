@@ -3,7 +3,7 @@
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://pad.polito.it/dp2/biblio biblio_e.xsd ">
     <items>
-        <book isbn="15651354" year="2009Z" id="2">
+        <book isbn="1565153554" year="2009Z" id="2">
             <author>Frank Turing</author>
             <title>Story of an Automata</title>
             <citedBy>2</citedBy>
@@ -14,7 +14,7 @@
             <title>Impact of chemistry on smart drugs</title>
             <citedBy>2</citedBy>
         </article>
-        <article journal="1120-4563" issue="14" id="1">
+        <article journal="1120-4563" issue="0" id="1">
             <author>Albert Heisenberg</author>
             <title>Machine Learning on an ARM processor</title>
             <citedBy>2</citedBy>
