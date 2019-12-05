@@ -6,6 +6,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
+
 import it.polito.dp2.BIB.ass2.lib.jaxb.ObjectFactory;
 import it.polito.dp2.BIB.ass2.lib.jaxb.Results;
 import it.polito.dp2.BIB.ass2.lib.jaxb.Statement;

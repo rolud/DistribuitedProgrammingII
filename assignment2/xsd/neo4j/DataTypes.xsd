@@ -5,6 +5,13 @@
 			<xsd:sequence>
 				<xsd:element name="labels" type="xsd:anyURI" />
 				<xsd:element name="self" type="xsd:anyURI" />
+				<xsd:element name="metadata">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="id" type="xsd:integer" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
 				<xsd:element ref="data" />
 			</xsd:sequence>
 		</xsd:complexType>
@@ -13,6 +20,40 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="title" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="relationship">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="start" type="xsd:anyURI"/>
+				<xsd:element name="self" type="xsd:anyURI"/>
+				<xsd:element name="type" type="xsd:string"/>
+				<xsd:element name="end" type="xsd:anyURI"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="relationshipPayload">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="to" type="xsd:anyURI"/>
+				<xsd:element name="type" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+	<xsd:element name="traversalPayload">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="order" type="xsd:string"/>
+				<xsd:element name="relationships" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="direction" type="xsd:string"/>
+							<xsd:element name="type" type="xsd:string"/>									
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="max_depth" type="xsd:integer"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
