@@ -29,9 +29,6 @@ public class BibTests {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// Create reference data generator
-//		System.setProperty("it.polito.dp2.BIB.ass2.CitationFinderFactory", "it.polito.dp2.BIB.sol2.CitationFinderFactory");
-//		System.setProperty("it.polito.dp2.BIB.ass2.PORT", "7474");
-//		System.setProperty("it.polito.dp2.BIB.ass2.URL", "http://localhost:7474/db");
 		System.setProperty("it.polito.dp2.BIB.BibReaderFactory", "it.polito.dp2.BIB.Random.BibReaderFactoryImpl");
 		referenceBibReader = BibReaderFactory.newInstance().newBibReader();
 		client = ClientBuilder.newClient();

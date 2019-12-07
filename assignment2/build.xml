@@ -43,6 +43,8 @@
 	
 	<!-- The default keyword for the gBooks example -->
 	<property name="keyword" value="java" />
+	
+	<property name="nmax" value="5" />
 
 	<!-- Compilation options -->
 	<property name="debug" value="true" />
@@ -197,6 +199,16 @@
 	<!-- Target for running the gBooks example (to be run with -Dkeyword) -->
     <target name="runGbooks" depends="compileExamples">
     	<java classname="it.polito.dp2.rest.gbooks.client.BookClient" fork="true">
+    		<arg line="${keyword}" />
+		<classpath refid="test.classpath">
+		</classpath>
+    	</java>
+    </target>
+	
+	<!-- Target for running the BookClient_e exercise (to be run with -Dnmax -Dkeyword) -->
+    <target name="runBookClient" depends="buildSolutions" description="Run BookClient_e">
+    	<java classname="it.polito.dp2.BIB.sol2.BookClient_e" fork="true">
+    		<arg line="${nmax}" />
     		<arg line="${keyword}" />
 		<classpath refid="test.classpath">
 		</classpath>

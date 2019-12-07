@@ -10,6 +10,7 @@ make-zip
 neo4j-build.clear-and-restart-neo4j
 neo4j-build.start-neo4j
 neo4j-build.stop-neo4j
+runBookClient
 runFuncTest
 runGbooks
 runJAXBBiblio
