@@ -9,6 +9,9 @@ import it.polito.dp2.xml.biblio.PrintableItem;
 import it.polito.pad.dp2.biblio.BiblioItemType;
 import it.polito.pad.dp2.biblio.BookType;
 
+/*
+ * Created by rolud
+ */
 public class CrossrefFactory extends Factory {
 	public static PrintableItem createPrintableItem(BigInteger id, Items crossrefItem) {
 		BiblioItemType item = new BiblioItemType();

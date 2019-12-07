@@ -18,7 +18,7 @@
 	<!-- define the client artifacts generation target -->
 	<target name="generate-artifacts">
 		<exec executable="xjc" failonerror="true">
-			<arg line="-d ${gen.dir} -p it.polito.dp2.BIB.sol2.nea4j.client.jaxb ${neo4j.schema}"/>
+			<arg line="-d ${gen.dir} -p it.polito.dp2.BIB.sol2.neo4j.client.jaxb ${neo4j.schema}"/>
 		</exec>
 		<exec executable="xjc" failonerror="true">
 			<arg line="-d ${gen.dir} -p it.polito.dp2.BIB.sol2.crossref.client.jaxb ${crossref.schema}"/>

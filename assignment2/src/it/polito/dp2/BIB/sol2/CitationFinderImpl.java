@@ -2,8 +2,6 @@ package it.polito.dp2.BIB.sol2;
 
 import java.math.BigInteger;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,22 +19,18 @@ import it.polito.dp2.BIB.BibReader;
 import it.polito.dp2.BIB.BibReaderException;
 import it.polito.dp2.BIB.BibReaderFactory;
 import it.polito.dp2.BIB.BookReader;
-import it.polito.dp2.BIB.FactoryConfigurationError;
 import it.polito.dp2.BIB.ItemReader;
 import it.polito.dp2.BIB.JournalReader;
 import it.polito.dp2.BIB.ass2.CitationFinder;
 import it.polito.dp2.BIB.ass2.CitationFinderException;
 import it.polito.dp2.BIB.ass2.ServiceException;
 import it.polito.dp2.BIB.ass2.UnknownItemException;
-import it.polito.dp2.rest.neo4j.client.jaxb.Data;
-import it.polito.dp2.rest.neo4j.client.jaxb.Node;
-import it.polito.dp2.rest.neo4j.client.jaxb.Relationship;
-import it.polito.dp2.rest.neo4j.client.jaxb.RelationshipData;
-import it.polito.dp2.rest.neo4j.client.jaxb.RelationshipPayload;
-import it.polito.dp2.rest.neo4j.client.jaxb.TraversalPayload;
-import it.polito.dp2.rest.neo4j.client.jaxb.ObjectFactory;
-
-
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.Data;
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.Node;
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.Relationship;
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.RelationshipPayload;
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.TraversalPayload;
+import it.polito.dp2.BIB.sol2.neo4j.client.jaxb.ObjectFactory;
 
 /*
  * Created by rolud
@@ -103,12 +97,7 @@ public class CitationFinderImpl implements CitationFinder {
 					      .request()
 				    	  .accept(MediaType.APPLICATION_JSON_TYPE)
 				          .post(Entity.json(data), Node.class);
-		
-//		System.out.println("POST NODE RESPONSE : ");
-//		System.out.println("--------   " + node.getSelf());
-//		System.out.println("--------   " + node.getData().getTitle());
-//		System.out.println("--------   " + node.getLabels());
-//		System.out.println();
+		System.out.println("Created node " + node.getSelf());
 		return node;
 	}
 	
@@ -124,12 +113,8 @@ public class CitationFinderImpl implements CitationFinder {
 								          .accept(MediaType.APPLICATION_JSON_TYPE)
 								          .post(Entity.json(data), Relationship.class);
 
-//		System.out.println("POST RELATIONSHIP RESPONSE : ");
-//		System.out.println("--------   " + relationship.getSelf());
-//		System.out.println("--------   " + relationship.getStart());
-//		System.out.println("--------   " + relationship.getEnd());
-//		System.out.println("--------   " + relationship.getType());
-//		System.out.println();
+
+		System.out.println("Created relationship " + relationship.getSelf());
 	}
 	
 	private List<Node> getCitingElements(Node nodeStart, int maxDepth) {
@@ -173,7 +158,6 @@ public class CitationFinderImpl implements CitationFinder {
 	@Override
 	public Set<ItemReader> findAllCitingItems(ItemReader item, int maxDepth)
 			throws UnknownItemException, ServiceException {
-		// TODO Auto-generated method stub
 		
 		if (!itemToNode.containsKey(item))
 			throw new UnknownItemException("Item " + item.getTitle() + " unknown");

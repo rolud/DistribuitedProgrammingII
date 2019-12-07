@@ -22,7 +22,6 @@ import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import it.polito.dp2.BIB.sol2.crossref.client.jaxb.CrossrefItems;
 import it.polito.dp2.BIB.sol2.crossref.client.jaxb.CrossrefSearchResult;
 import it.polito.dp2.rest.gbooks.client.Factory;
 import it.polito.dp2.rest.gbooks.client.MyErrorHandler;
@@ -30,6 +29,9 @@ import it.polito.dp2.rest.gbooks.client.jaxb.Items;
 import it.polito.dp2.rest.gbooks.client.jaxb.SearchResult;
 import it.polito.dp2.xml.biblio.PrintableItem;
 
+/*
+ * Created by rolud
+ */
 public class BookClient_e {
 
 	JAXBContext jcGoogle;
@@ -83,26 +85,7 @@ public class BookClient_e {
 	
 	public void PerformSearch(int n, String[] kw){
 		
-		System.out.println("  ____   ___    ___    ____  _        ___\n"+ 
-" /    | /   \\  /   \\  /    || |      /  _]\n"+
-"|   __||     ||     ||   __|| |     /  [_ \n"+
-"|  |  ||  O  ||  O  ||  |  || |___ |    _]\n"+
-"|  |_ ||     ||     ||  |_ ||     ||   [_ \n"+
-"|     ||     ||     ||     ||     ||     | \n"+	
-"|___,_| \\___/  \\___/ |___,_||_____||_____|\n"+
-"                                          ");
 		searchGoogleBooks(n, kw);
-		
-		
-		System.out.println("    __  ____   ___   _____ _____ ____     ___  _____ \n"+
-"   /  ]|    \\ /   \\ / ___// ___/|    \\   /  _]|     |\n"+
-"  /  / |  D  )     (   \\_(   \\_ |  D  ) /  [_ |   __|\n"+
-" /  /  |    /|  O  |\\__  |\\__  ||    / |    _]|  |_  \n"+
-"/   \\_ |    \\|     |/  \\ |/  \\ ||    \\ |   [_ |   _] \n"+
-"\\     ||  .  \\     |\\    |\\    ||  .  \\|     ||  |   \n"+
-" \\____||__|\\_|\\___/  \\___| \\___||__|\\_||_____||__|   \n"+
-"                                                     ");
-	
 		searchCrossref(n, kw);
 		
 	}
@@ -119,11 +102,12 @@ public class BookClient_e {
 			queryString.append(' ');
 			queryString.append(kw[i]);
 		}
-		System.out.println("Searching "+queryString+" on Crossref:");
+		System.out.println("********************************************************************************");
+		System.out.println("********************************************************************************");
+		System.out.println("Searching first " + n + " valid results " + queryString + " on Crossref: ");
 		Response response = targetCrossref
 								.queryParam("query", queryString)
 								.queryParam("filter", "type:book")
-								//.queryParam("rows", n)
 								.request()
 								.accept(MediaType.APPLICATION_JSON)
 								.get();
@@ -132,11 +116,10 @@ public class BookClient_e {
 			return;
 		}
 		response.bufferEntity();
-//		System.out.println("Response as string: "+response.readEntity(String.class));
+		// System.out.println("Response as string: "+response.readEntity(String.class));
 		CrossrefSearchResult result = response.readEntity(CrossrefSearchResult.class);
 		
 		System.out.println("OK Response received. Items:"+result.getMessage().getTotalResults());
-		System.out.println("SIZE : "+result.getMessage().getItems().size());
 		System.out.println("Validating items and converting validated items to xml.");
 		
 		List<PrintableItem> pitems = new ArrayList<PrintableItem>();
@@ -146,7 +129,7 @@ public class BookClient_e {
 			try {
 				// validate item
 		    	JAXBSource source = new JAXBSource(jcCrossref, item);
-		    	System.out.println("Validating "+item.getTitle());
+		    	System.out.println("Validating "+item.getURL());
 		    	validatorCrossref.validate(source);
 		    	System.out.println("Validation OK");
 		    	// add item to list
@@ -189,7 +172,9 @@ public class BookClient_e {
 			queryString.append(' ');
 			queryString.append(kw[i]);
 		}
-		System.out.println("Searching "+queryString+" on Google Books:");
+		System.out.println("********************************************************************************");
+		System.out.println("********************************************************************************");
+		System.out.println(" Searching first " + n + " valid results " + queryString + " on Google Books: ");
 		Response response = targetGoogle
 							   .queryParam("q", queryString)
 							   .queryParam("printType", "books")
@@ -201,7 +186,7 @@ public class BookClient_e {
 			return;
 		}
 		response.bufferEntity();
-	//				System.out.println("Response as string: "+response.readEntity(String.class));
+		// System.out.println("Response as string: "+response.readEntity(String.class));
 		SearchResult result = response.readEntity(SearchResult.class);
 		
 		System.out.println("OK Response received. Items:"+result.getTotalItems());

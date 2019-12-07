@@ -24,6 +24,7 @@
 				<xsd:element name="author" type="Author" maxOccurs="unbounded" />
 				<xsd:element name="subtitle" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
 				<xsd:element name="ISBN" type="ISBNCode" maxOccurs="unbounded" />
+				<xsd:element name="URL" type="xsd:string" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
