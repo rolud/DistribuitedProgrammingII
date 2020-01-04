@@ -1,0 +1,19 @@
+Distributed Programming II A.Y. 2019-20
+=======================================
+
+Assignment n. 3 - Part a (Lab 5)
+--------------------------------
+
+This archive includes:
+
+- README            	This file
+
+- Assignment3a.pdf   	The text of Assignment 3 - Part a (Lab 5)
+
+- doc               	The folder where you have to put the
+	               	    documentation spreadsheet of your design
+	               	    and where you can find the HTTP1.1 semantics
+	               	    standard.
+
+- xsd                   The folder where you have to put the
+                        schema of your design.
