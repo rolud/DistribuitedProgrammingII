@@ -8,6 +8,7 @@
 			    <xsd:element name="journals" type="xsd:anyURI"></xsd:element>
 			    <xsd:element name="articles" type="xsd:anyURI"></xsd:element>
 			    <xsd:element name="books" type="xsd:anyURI"></xsd:element>
+			    <xsd:element name="bookshelves" type="xsd:anyURI"></xsd:element>
 			    <xsd:element name="self" type="xsd:anyURI" minOccurs="0"></xsd:element>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -135,4 +136,28 @@
 	   <xsd:pattern value="[0-9]{4}-[0-9]{3}([0-9]|X)"/>
 	  </xsd:restriction> 
 	</xsd:simpleType>
+	
+	
+	<xsd:element name="bookshelves">
+		<xsd:complexType>
+			<xsd:sequence>
+			    <xsd:element name="totalPages" type="xsd:positiveInteger"/>
+			    <xsd:element name="page" type="xsd:positiveInteger"/>
+			    <xsd:element name="next" type="xsd:anyURI" minOccurs="0"/>
+				<xsd:element ref="bookshelf" minOccurs="0" maxOccurs="20"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="bookshelf">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="self" type="xsd:anyURI" minOccurs="0"/>
+				<xsd:element name="name" type="xsd:string"/>
+<!-- 				<xsd:element name="item" type="xsd:anyURI" minOccurs="0" maxOccurs="20"/> -->
+				<xsd:element ref="item" minOccurs="0" maxOccurs="20"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
 </xsd:schema>
