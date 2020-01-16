@@ -170,9 +170,17 @@ public class BibTests {
 		Bookshelf second = testClient.createBookshelf("Non-Fiction History");
 		Bookshelf third = testClient.createBookshelf("Non-Fiction Math");
 		
-		// upload a new book item to the server
+		// upload a new book item to the server and update the item with returned data
 		Item item = buildItem();
-		ItemReader addedItem = adminClient.createItem(item);
+		item = adminClient.createItem(item);
+		
+		Set<ItemReader> addedItemSet = testClient.getItems("The Way of Z", 1990, 1999);
+		assertNotNull("The getItems of the implementation under test generated a null set of added ItemReader", addedItemSet);
+		assertTrue("The getItems of the implementation under test generated an empty set of ItemReader", addedItemSet.iterator().hasNext());
+		
+		
+		// retrieve the only (expected) item from the set   
+		ItemReader addedItem = addedItemSet.iterator().next();
 		
 		// add the new book item to all bookshelves
 		first.addItem(addedItem);
@@ -214,8 +222,7 @@ public class BibTests {
 	private Item buildItem() {
 		Item itemToSend = new Item();
 		itemToSend.setTitle("The Way of Z");
-		itemToSend.setSubtitle("Practical Programming with Formal Methods");
-		itemToSend.setSelf("11");
+		itemToSend.setSubtitle("Practica1 Programming with Formal Methods");
 		itemToSend.getAuthor().add("J. Yusupov");
 		BookType book = new BookType();
 		book.setISBN("0131411553");
@@ -223,7 +230,7 @@ public class BibTests {
 		itemToSend.setBook(book);
 		try {
 			XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-			calendar.setYear(2019);
+			calendar.setYear(1996);
 			book.setYear(calendar);
 		} catch (DatatypeConfigurationException e) {
 			assertTrue("Unexpected internal error",false);

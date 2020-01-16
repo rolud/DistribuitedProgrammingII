@@ -17,7 +17,7 @@ public class ClientFactory extends it.polito.dp2.BIB.ass3.ClientFactory{
 			if(uriProp!=null) {
 				uri= new URI(uriProp);
 			}else {
-				uri= new URI("http://localhost:8080/RnsSystem/rest/");
+				uri= new URI("http://localhost:8080/BibSystem/rest/");
 			}
 			
 		} catch (URISyntaxException e) {
