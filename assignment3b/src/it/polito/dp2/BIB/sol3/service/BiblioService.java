@@ -8,10 +8,13 @@ import java.util.Set;
 import javax.ws.rs.core.UriInfo;
 
 import it.polito.dp2.BIB.sol3.db.BadRequestInOperationException;
+import it.polito.dp2.BIB.sol3.db.BookshelfDB;
 import it.polito.dp2.BIB.sol3.db.ConflictInOperationException;
 import it.polito.dp2.BIB.sol3.db.DB;
 import it.polito.dp2.BIB.sol3.db.ItemPage;
 import it.polito.dp2.BIB.sol3.db.Neo4jDB;
+import it.polito.dp2.BIB.sol3.service.jaxb.Bookshelf;
+import it.polito.dp2.BIB.sol3.service.jaxb.Bookshelves;
 import it.polito.dp2.BIB.sol3.service.jaxb.Citation;
 import it.polito.dp2.BIB.sol3.service.jaxb.Item;
 import it.polito.dp2.BIB.sol3.service.jaxb.Items;
@@ -19,6 +22,7 @@ import it.polito.dp2.BIB.sol3.service.util.ResourseUtils;
 
 public class BiblioService {
 	private DB n4jDb = Neo4jDB.getNeo4jDB();
+	private BookshelfDB bsDB = BookshelfDB.getBookshelfDB();
 	ResourseUtils rutil;
 
 
@@ -131,5 +135,65 @@ public class BiblioService {
 		items.setPage(BigInteger.ONE);
 		return items;
 	}
+	
+	public Bookshelf createBookshelf(Bookshelf bookshelf) throws Exception {
+		long id = BookshelfDB.getNextId();
+		Bookshelf b = bsDB.createBookshelf(id, bookshelf);
+		if (b == null)
+			throw new Exception("null id");
+		rutil.completeBookshelf(bookshelf, BigInteger.valueOf(id));
+		return bookshelf;
+	}
+	
+	public Bookshelves getBookshelves(String keyword) throws Exception {
+		Bookshelves bookshelves = new Bookshelves();
+		List<Bookshelf> list = bookshelves.getBookshelf();
+		for (Entry<Long, Bookshelf> entry : bsDB.getBookshelves(keyword).entrySet()) {
+			Bookshelf bookshelf = entry.getValue();
+			rutil.completeBookshelf(bookshelf, BigInteger.valueOf(entry.getKey()));
+			list.add(bookshelf);
+		}
+		return bookshelves;
+	}
+	
+	public Bookshelf getBookshelf(BigInteger id) {
+		Bookshelf bookshelf = bsDB.getBookshelf(id);
+		if (bookshelf != null)
+			rutil.completeBookshelf(bookshelf, id);
+		return bookshelf;
+	}
 
+	public Bookshelf updateBookshelf(BigInteger id, Bookshelf bookshelf) throws Exception {
+		Bookshelf updateBookshelf = bsDB.updateBookshelf(id, bookshelf);
+		if (updateBookshelf != null) {
+			rutil.completeBookshelf(updateBookshelf, id);
+			return updateBookshelf;
+		} else
+			return null;
+	}
+	
+	public BigInteger deleteBookshelf(BigInteger id) throws Exception {
+		return bsDB.deleteBookshelf(id);	
+	}
+	
+	public Items getBookshelfItems(BigInteger id) throws Exception {
+		Items items = new Items();
+		List<Item> list = items.getItem();
+		Set<Entry<Long, Item>> set = bsDB.getBookshelfItems(id).entrySet();
+		if (set == null) return null;
+		for (Entry<Long, Item> entry : set) {
+			Item item = entry.getValue();
+			rutil.completeItem(item, BigInteger.valueOf(entry.getKey()));
+			list.add(item);
+		}
+		return items;
+	}
+	
+	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
+		Item item = n4jDb.getItem(itemId);
+		Bookshelf bookshelf = bsDB.getBookshelf(bookshelfId);
+		if (item == null || bookshelf == null) return null;
+		Item ret = bsDB.addItemToBookshelf(bookshelfId, itemId, item);
+		return ret;
+	}
 }

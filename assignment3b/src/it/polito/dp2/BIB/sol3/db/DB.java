@@ -3,6 +3,7 @@ package it.polito.dp2.BIB.sol3.db;
 import java.math.BigInteger;
 
 import it.polito.dp2.BIB.sol3.service.SearchScope;
+import it.polito.dp2.BIB.sol3.service.jaxb.Bookshelf;
 import it.polito.dp2.BIB.sol3.service.jaxb.Citation;
 import it.polito.dp2.BIB.sol3.service.jaxb.Item;
 
@@ -115,5 +116,5 @@ public interface DB {
 	 * @throws Exception if the operation cannot be completed 
 	 */
 	ItemPage getItemCitedBy(BigInteger id, BigInteger page) throws Exception;
-
+	
 }
