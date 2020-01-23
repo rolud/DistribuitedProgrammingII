@@ -76,6 +76,7 @@ public class BiblioResources {
 		try {
 			return service.getItems(SearchScope.ALL, keyword, beforeInclusive, afterInclusive, BigInteger.valueOf(page));
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new InternalServerErrorException(e);
 		}
 	}
@@ -460,29 +461,39 @@ public class BiblioResources {
 	public Items getBookshelfItems(
 			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger id) {
 		try {
-			return service.getBookshelfItems(id);
-		} catch (Exception e) {
-			throw new InternalServerErrorException(e);
+			Items items = service.getBookshelfItems(id);
+			if (items == null) throw new NotFoundException();
+			return items;
+		} catch (NotFoundException e1) {
+			throw new NotFoundException(e1);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			throw new InternalServerErrorException(e2);
 		}
 	}
 	
-	@POST
-	@Path("/bookshelves/{id}/items")
-    @ApiOperation(value = "addItemToBookshelf", notes = "add a single item to a bookshelf")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "OK", response = Bookshelf.class),
-			@ApiResponse(code = 400, message = "Bad Request"),
+	@PUT
+	@Path("/bookshelves/{id}/items/{tid}")
+    @ApiOperation(value = "addItemToBookshelf", notes = "add an item to a bookshelf", response = Item.class
+	)
+    @ApiResponses(value = {
+    		@ApiResponse(code = 201, message = "Created", response = Bookshelf.class),
+    		@ApiResponse(code = 400, message = "Bad Request"),
     		@ApiResponse(code = 404, message = "Not Found"),
-	})
+    		@ApiResponse(code = 409, message = "Conflict"),
+    		})
 	@Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	public Response addItemToBookshelf(
-			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger bookshelfId,
-			BigInteger itemId
-			) {
-		Item returnItem;
+			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger id,
+			@ApiParam("The id of the item") @PathParam("tid") BigInteger tid,
+			Item item) throws Exception {
+		Item itemFromDB = service.getItem(tid);
+	    if (!itemFromDB.getSelf().equals(item.getSelf()))
+	    	throw new BadRequestException();
+	    Item returnItem;
 		try {
-			returnItem = service.addItemToBookshelf(bookshelfId, itemId);
+			returnItem = service.addItemToBookshelf(id, tid);
 			if (returnItem == null) throw new NotFoundException();
 			return Response.created(new URI(returnItem.getSelf())).entity(returnItem).build();
 		} catch (NotFoundException e1) {
@@ -490,6 +501,6 @@ public class BiblioResources {
 		} catch (Exception e2) {
 			throw new InternalServerErrorException(e2);
 		}
+	    	
 	}
-	
 }

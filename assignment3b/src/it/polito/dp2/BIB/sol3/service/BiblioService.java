@@ -179,6 +179,7 @@ public class BiblioService {
 	public Items getBookshelfItems(BigInteger id) throws Exception {
 		Items items = new Items();
 		List<Item> list = items.getItem();
+		if (bsDB.getBookshelfItems(id) == null) return null;
 		Set<Entry<Long, Item>> set = bsDB.getBookshelfItems(id).entrySet();
 		if (set == null) return null;
 		for (Entry<Long, Item> entry : set) {
@@ -192,6 +193,8 @@ public class BiblioService {
 	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		Item item = n4jDb.getItem(itemId);
 		Bookshelf bookshelf = bsDB.getBookshelf(bookshelfId);
+		System.out.println("     ITEM STATUS " + item);
+		System.out.println("BOOKSHELF STATUS " + bookshelf);
 		if (item == null || bookshelf == null) return null;
 		Item ret = bsDB.addItemToBookshelf(bookshelfId, itemId, item);
 		return ret;

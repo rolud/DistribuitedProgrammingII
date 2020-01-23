@@ -26,6 +26,7 @@ public class BookshelfDB {
 	private BookshelfDB() {
 		bookshelvesById = new ConcurrentHashMap<Long, Bookshelf>();
 		bookshelvesByKeyword = new ConcurrentHashMap<String, ConcurrentHashMap<Long, Bookshelf>>();
+		bookshelfItems = new ConcurrentHashMap<Long, ConcurrentHashMap<Long, Item>>();
 	}
 	
 	public static BookshelfDB getBookshelfDB() {
@@ -55,6 +56,7 @@ public class BookshelfDB {
 	public Bookshelf createBookshelf(long id, Bookshelf bookshelf) {
 		if (bookshelvesById.putIfAbsent(id, bookshelf) == null) {
 			addIndexing(bookshelf, id);
+			bookshelfItems.put(id, new ConcurrentHashMap<>(0));
 			return bookshelf;
 		} else 
 			return null;
@@ -96,6 +98,7 @@ public class BookshelfDB {
 		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(token);
 		if (map != null) {
 			map.remove(id);
+			bookshelfItems.remove(id);
 		}
 	}
 	
@@ -120,8 +123,7 @@ public class BookshelfDB {
 	public synchronized Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId, Item item) {
 		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId);
 		if (map == null) return null;
-		Item ret = map.putIfAbsent(itemId.longValue(), item);
-		if (ret != null) return null;
+		map.put(itemId.longValue(), item);
 		return item;
 	}
 	
