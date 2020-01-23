@@ -488,8 +488,11 @@ public class BiblioResources {
 			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger id,
 			@ApiParam("The id of the item") @PathParam("tid") BigInteger tid,
 			Item item) throws Exception {
+		
 		Item itemFromDB = service.getItem(tid);
-	    if (!itemFromDB.getSelf().equals(item.getSelf()))
+		System.out.println("RESOURCES ---  DB ITEM " + itemFromDB.getSelf());
+		System.out.println("RESOURCES --- PUT ITEM " + item.getSelf());
+		if (!itemFromDB.getSelf().equals(item.getSelf()))
 	    	throw new BadRequestException();
 	    Item returnItem;
 		try {
@@ -498,9 +501,35 @@ public class BiblioResources {
 			return Response.created(new URI(returnItem.getSelf())).entity(returnItem).build();
 		} catch (NotFoundException e1) {
 			throw new NotFoundException(e1);
-		} catch (Exception e2) {
-			throw new InternalServerErrorException(e2);
+		} catch (BadRequestException e2) {
+			throw new BadRequestException(e2);
+		} catch (Exception e3) {
+			e3.printStackTrace();
+			throw new InternalServerErrorException(e3);
 		}
 	    	
 	}
+	
+	@DELETE
+	@Path("/bookshelves/{id}/items/{tid}")
+    @ApiOperation(value = "deleteItemFromBokkshelf", notes = "delete an item from a bookshelf"
+	)
+    @ApiResponses(value = {
+    		@ApiResponse(code = 204, message = "OK", response = Item.class),
+    		@ApiResponse(code = 404, message = "Not Found"),
+    		})
+	public void deleteItemFromBookshelf(
+			@ApiParam("The id of the bookshelf") @PathParam("id")  BigInteger id, 
+			@ApiParam("The id of the item")      @PathParam("tid") BigInteger tid) {
+		Item item;
+		try {
+			item = service.deleteItemFromBookshelf(id,tid);
+		} catch (Exception e) {
+			throw new InternalServerErrorException();
+		}
+		if(item == null)
+			throw new NotFoundException();
+		return;
+	}
+	
 }

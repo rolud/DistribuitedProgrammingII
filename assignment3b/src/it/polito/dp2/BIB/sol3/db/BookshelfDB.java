@@ -56,7 +56,9 @@ public class BookshelfDB {
 	public Bookshelf createBookshelf(long id, Bookshelf bookshelf) {
 		if (bookshelvesById.putIfAbsent(id, bookshelf) == null) {
 			addIndexing(bookshelf, id);
-			bookshelfItems.put(id, new ConcurrentHashMap<>(0));
+			System.out.println(" ... adding empty items map in bookshelf " + id);
+//			ConcurrentHashMap<Long, Item> newMap = new ConcurrentHashMap<>();
+//			bookshelfItems.put(id, newMap);
 			return bookshelf;
 		} else 
 			return null;
@@ -98,7 +100,6 @@ public class BookshelfDB {
 		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(token);
 		if (map != null) {
 			map.remove(id);
-			bookshelfItems.remove(id);
 		}
 	}
 	
@@ -117,14 +118,26 @@ public class BookshelfDB {
 	}
 	
 	public Map<Long, Item> getBookshelfItems(BigInteger id) {
-		return bookshelfItems.get(id.longValue());
+		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(id.longValue());
+		if (map == null) return new HashMap<Long,Item>(0);
+		return map;
 	}
 	
-	public synchronized Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId, Item item) {
-		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId);
-		if (map == null) return null;
+	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId, Item item) {
+		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId.longValue());
+		if (map == null) {
+			map = new ConcurrentHashMap<Long, Item>();
+			bookshelfItems.put(bookshelfId.longValue(), map);
+		}
 		map.put(itemId.longValue(), item);
 		return item;
 	}
 	
+	public Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) {
+		Item item;
+		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId.longValue());
+		if (map == null) return null;
+		item = map.remove(itemId.longValue());
+		return item;
+	}
 }

@@ -193,10 +193,16 @@ public class BiblioService {
 	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		Item item = n4jDb.getItem(itemId);
 		Bookshelf bookshelf = bsDB.getBookshelf(bookshelfId);
+		System.out.println("--- FROM SERVICE --- BOOKSHELF " + bookshelfId + " ITEM " + itemId);
 		System.out.println("     ITEM STATUS " + item);
 		System.out.println("BOOKSHELF STATUS " + bookshelf);
 		if (item == null || bookshelf == null) return null;
 		Item ret = bsDB.addItemToBookshelf(bookshelfId, itemId, item);
+		rutil.completeItem(ret, itemId);
 		return ret;
+	}
+	
+	public Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
+		return bsDB.deleteItemFromBookshelf(bookshelfId, itemId);
 	}
 }
