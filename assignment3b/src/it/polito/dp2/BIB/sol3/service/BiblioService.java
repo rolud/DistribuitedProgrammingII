@@ -7,12 +7,14 @@ import java.util.Set;
 
 import javax.ws.rs.core.UriInfo;
 
+import it.polito.dp2.BIB.ass3.TooManyItemsException;
 import it.polito.dp2.BIB.sol3.db.BadRequestInOperationException;
 import it.polito.dp2.BIB.sol3.db.BookshelfDB;
 import it.polito.dp2.BIB.sol3.db.ConflictInOperationException;
 import it.polito.dp2.BIB.sol3.db.DB;
 import it.polito.dp2.BIB.sol3.db.ItemPage;
 import it.polito.dp2.BIB.sol3.db.Neo4jDB;
+import it.polito.dp2.BIB.sol3.resources.CounterImpl;
 import it.polito.dp2.BIB.sol3.service.jaxb.Bookshelf;
 import it.polito.dp2.BIB.sol3.service.jaxb.Bookshelves;
 import it.polito.dp2.BIB.sol3.service.jaxb.Citation;
@@ -25,9 +27,14 @@ public class BiblioService {
 	private BookshelfDB bsDB = BookshelfDB.getBookshelfDB();
 	ResourseUtils rutil;
 
+	private CounterImpl counter = CounterImpl.getCounter();
 
 	public BiblioService(UriInfo uriInfo) {
 		rutil = new ResourseUtils((uriInfo.getBaseUriBuilder()));
+		try {
+			ItemPage itemPage = n4jDb.getItems(SearchScope.ALL, "", 10000, 0, BigInteger.valueOf(1));
+			counter.initCounter(itemPage.getMap().keySet());	
+		} catch (Exception e) {}
 	}
 	
 	public Items getItems(SearchScope scope, String keyword, int beforeInclusive, int afterInclusive, BigInteger page) throws Exception {
@@ -68,12 +75,19 @@ public class BiblioService {
 		if (id==null)
 			throw new Exception("Null id");
 		rutil.completeItem(item, id);
+		counter.initCounter(id);
 		return item;
 	}
 
-	public BigInteger deleteItem(BigInteger id) throws ConflictServiceException, Exception {
+	public synchronized BigInteger deleteItem(BigInteger id) throws ConflictServiceException, Exception {
 		try {
-			return n4jDb.deleteItem(id);
+			BigInteger deletedId = n4jDb.deleteItem(id);
+			System.out.println("DELETED " + deletedId);
+			if (deletedId != null) {
+				counter.deleteCounter(id);
+				bsDB.deleteItemFromAllBookshelves(id);
+			}
+			return deletedId;
 		} catch (ConflictInOperationException e) {
 			throw new ConflictServiceException();
 		}
@@ -163,7 +177,7 @@ public class BiblioService {
 		return bookshelf;
 	}
 
-	public Bookshelf updateBookshelf(BigInteger id, Bookshelf bookshelf) throws Exception {
+	public Bookshelf updateBookshelf(BigInteger id, Bookshelf bookshelf) {
 		Bookshelf updateBookshelf = bsDB.updateBookshelf(id, bookshelf);
 		if (updateBookshelf != null) {
 			rutil.completeBookshelf(updateBookshelf, id);
@@ -190,6 +204,14 @@ public class BiblioService {
 		return items;
 	}
 	
+	public Item getItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
+		
+		Item item = bsDB.getItemFromBookshelf(bookshelfId, itemId);
+		if (item != null)
+			rutil.completeItem(item, itemId);
+		return item;
+	}
+	
 	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		Item item = n4jDb.getItem(itemId);
 		Bookshelf bookshelf = bsDB.getBookshelf(bookshelfId);
@@ -198,11 +220,26 @@ public class BiblioService {
 		System.out.println("BOOKSHELF STATUS " + bookshelf);
 		if (item == null || bookshelf == null) return null;
 		Item ret = bsDB.addItemToBookshelf(bookshelfId, itemId, item);
+		if (ret == null) 
+			throw new TooManyItemsException();
 		rutil.completeItem(ret, itemId);
 		return ret;
 	}
 	
 	public Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		return bsDB.deleteItemFromBookshelf(bookshelfId, itemId);
+	}
+	
+
+	public int getCounterTotValue() {
+		return counter.getCounterTotValue();
+	}
+	
+	public int getCounterValue(BigInteger id) {
+		return counter.getCounterValue(id);
+	}
+	
+	public Object getSyncObject() {
+		return BookshelfDB.getMap();
 	}
 }

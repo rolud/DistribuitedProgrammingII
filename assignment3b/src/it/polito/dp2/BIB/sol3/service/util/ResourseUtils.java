@@ -46,5 +46,23 @@ public class ResourseUtils {
 		URI items = selfBuilder.clone().path("items").build();
 		bookshelf.setItems(items.toString());
 	}
+	
+	public static long getItemId(String url) {
+		String[] tokens = url.split("items/");
+		if (tokens.length != 2) return -1;
+		long id;
+		try {
+			id = Long.parseLong(tokens[1]);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+		return id;
+	}
+	
+	public static boolean isItemRequest(String requestUrl) {
+		String pattern = "[a-zA-Z0-9/:]+items/[0-9]+(/)?$";
+		if (requestUrl.matches(pattern)) return true;
+		return false;
+	}
 
 }

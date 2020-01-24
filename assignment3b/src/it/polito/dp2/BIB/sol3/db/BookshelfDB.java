@@ -15,10 +15,12 @@ import it.polito.dp2.BIB.sol3.service.jaxb.Item;
 
 public class BookshelfDB {
 
+	private final static int MAX_ITEMS = 20;
+	
 	private static BookshelfDB bsDB = new BookshelfDB();
 	private static long lastId = 0;
 	
-	private ConcurrentHashMap<Long, Bookshelf> bookshelvesById;
+	private static ConcurrentHashMap<Long, Bookshelf> bookshelvesById;
 	private ConcurrentHashMap<String, ConcurrentHashMap<Long, Bookshelf>> bookshelvesByKeyword;
 	private ConcurrentHashMap<Long, ConcurrentHashMap<Long, Item>> bookshelfItems;
 	
@@ -37,13 +39,14 @@ public class BookshelfDB {
 		return ++lastId;
 	}
 	
+	public static Map<Long, Bookshelf> getMap() {
+		return bookshelvesById;
+	}
+	
 	public Map<Long, Bookshelf> getBookshelves(String keyword) {
 		if (keyword == null)
 			keyword = "";
-		System.out.println(" --------------------------");
-		System.out.println(" --- KEYWORD " + keyword);
-		System.out.println(" --------------------------");
-		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(keyword);
+		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(keyword.toLowerCase());
 		if (map == null)
 			return new HashMap<Long, Bookshelf>(0);
 		return map;
@@ -56,9 +59,6 @@ public class BookshelfDB {
 	public Bookshelf createBookshelf(long id, Bookshelf bookshelf) {
 		if (bookshelvesById.putIfAbsent(id, bookshelf) == null) {
 			addIndexing(bookshelf, id);
-			System.out.println(" ... adding empty items map in bookshelf " + id);
-//			ConcurrentHashMap<Long, Item> newMap = new ConcurrentHashMap<>();
-//			bookshelfItems.put(id, newMap);
 			return bookshelf;
 		} else 
 			return null;
@@ -66,21 +66,25 @@ public class BookshelfDB {
 	
 	private void addIndexing(Bookshelf bookshelf, long id) {
 		addToIndex("", bookshelf, id);
+		
+		
 		StringTokenizer st = new StringTokenizer(bookshelf.getName());
-		System.out.println(" --------------------------");
 		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			addToIndex(token, bookshelf, id);
-			System.out.println(" --- INDEXED " + bookshelf.getName()  + " with " + token );
+			String word = st.nextToken();
+			StringBuffer sb = new StringBuffer();
+			for ( char c : word.toCharArray()) {
+				sb.append(c);
+				String token = sb.toString();
+				addToIndex(token, bookshelf, id);
+			}
 		}
-		System.out.println(" --------------------------");
 	}
 	
 	private void addToIndex(String token, Bookshelf bookshelf, long id) {
 		ConcurrentHashMap<Long, Bookshelf> set = bookshelvesByKeyword.get(token);
 		if (set == null) { // create set if there was no set for this token
 			ConcurrentHashMap<Long, Bookshelf> newMap = new ConcurrentHashMap<>();
-			set = bookshelvesByKeyword.putIfAbsent(token, newMap);
+			set = bookshelvesByKeyword.putIfAbsent(token.toLowerCase(), newMap);
 			if (set == null)
 				set = newMap;
 		}
@@ -91,8 +95,13 @@ public class BookshelfDB {
 		removeFromIndex("", id);
 		StringTokenizer st = new StringTokenizer(bookshelf.getName());
 		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			removeFromIndex(token, id);
+			String word = st.nextToken();
+			StringBuffer sb = new StringBuffer();
+			for ( char c : word.toCharArray()) {
+				sb.append(c);
+				String token = sb.toString();
+				removeFromIndex(token, id);
+			}
 		}
 	}
 	
@@ -123,21 +132,34 @@ public class BookshelfDB {
 		return map;
 	}
 	
-	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId, Item item) {
+	public Item getItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) {
+		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId.longValue());
+		if (map == null) return null;
+		return map.get(itemId.longValue());
+	}
+	
+	public synchronized Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId, Item item) {
 		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId.longValue());
 		if (map == null) {
 			map = new ConcurrentHashMap<Long, Item>();
 			bookshelfItems.put(bookshelfId.longValue(), map);
 		}
+		if (map.size() == MAX_ITEMS) return null;
 		map.put(itemId.longValue(), item);
 		return item;
 	}
 	
-	public Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) {
+	public synchronized Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) {
 		Item item;
 		ConcurrentHashMap<Long, Item> map = bookshelfItems.get(bookshelfId.longValue());
 		if (map == null) return null;
 		item = map.remove(itemId.longValue());
 		return item;
+	}
+
+	public synchronized void deleteItemFromAllBookshelves(BigInteger id) {
+		for (Map<Long,Item> map : bookshelfItems.values()) {
+			map.remove(id.longValue());
+		}
 	}
 }

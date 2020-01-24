@@ -1,6 +1,7 @@
 package it.polito.dp2.BIB.sol3.resources;
 
 import it.polito.dp2.BIB.sol3.service.jaxb.*;
+import it.polito.dp2.BIB.ass3.TooManyItemsException;
 import it.polito.dp2.BIB.sol3.model.EBiblio;
 import it.polito.dp2.BIB.sol3.service.BadRequestServiceException;
 import it.polito.dp2.BIB.sol3.service.BiblioService;
@@ -15,6 +16,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -419,13 +421,15 @@ public class BiblioResources {
 			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger id,
 			Bookshelf bookshelf) {
 		Bookshelf updatedBookshelf;
-		try {
+		synchronized (service.getSyncObject()) {
+			Bookshelf oldBookshelf = service.getBookshelf(id);
+			if (oldBookshelf == null)
+				throw new NotFoundException();
 			updatedBookshelf = service.updateBookshelf(id, bookshelf);
-		} catch (Exception e) {
-			throw new InternalServerErrorException();
+			
 		}
 		if (updatedBookshelf == null)
-			throw new NotFoundException();
+			throw new ForbiddenException();
 		return updatedBookshelf;
 	}
 	
@@ -472,6 +476,29 @@ public class BiblioResources {
 		}
 	}
 	
+	@GET
+	@Path("/bookshelves/{id}/items/{tid}")
+    @ApiOperation(value = "getItemFromBookshelf", notes = "get item from of a bookshelf")
+    @ApiResponses(value = {
+    		@ApiResponse(code = 200, message = "OK", response = Item.class),
+    		@ApiResponse(code = 404, message = "Not Found"),
+    		})
+	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
+	public Item getItemFromBookshelf(
+			@ApiParam("The id of the bookshelf") @PathParam("id")  BigInteger id,
+			@ApiParam("The id of the item")      @PathParam("tid") BigInteger tid) {
+		try {
+			Item item = service.getItemFromBookshelf(id, tid);
+			if (item == null) throw new NotFoundException();
+			return item;
+		} catch (NotFoundException e1) {
+			throw new NotFoundException(e1);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			throw new InternalServerErrorException(e2);
+		}
+	}
+	
 	@PUT
 	@Path("/bookshelves/{id}/items/{tid}")
     @ApiOperation(value = "addItemToBookshelf", notes = "add an item to a bookshelf", response = Item.class
@@ -479,8 +506,8 @@ public class BiblioResources {
     @ApiResponses(value = {
     		@ApiResponse(code = 201, message = "Created", response = Bookshelf.class),
     		@ApiResponse(code = 400, message = "Bad Request"),
-    		@ApiResponse(code = 404, message = "Not Found"),
-    		@ApiResponse(code = 409, message = "Conflict"),
+    		@ApiResponse(code = 403, message = "Forbidden (too many items in bookshelf)"),
+			@ApiResponse(code = 404, message = "Not Found"),
     		})
 	@Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
@@ -490,6 +517,7 @@ public class BiblioResources {
 			Item item) throws Exception {
 		
 		Item itemFromDB = service.getItem(tid);
+		if (itemFromDB == null) throw new NotFoundException();
 		System.out.println("RESOURCES ---  DB ITEM " + itemFromDB.getSelf());
 		System.out.println("RESOURCES --- PUT ITEM " + item.getSelf());
 		if (!itemFromDB.getSelf().equals(item.getSelf()))
@@ -499,20 +527,22 @@ public class BiblioResources {
 			returnItem = service.addItemToBookshelf(id, tid);
 			if (returnItem == null) throw new NotFoundException();
 			return Response.created(new URI(returnItem.getSelf())).entity(returnItem).build();
-		} catch (NotFoundException e1) {
-			throw new NotFoundException(e1);
-		} catch (BadRequestException e2) {
-			throw new BadRequestException(e2);
-		} catch (Exception e3) {
-			e3.printStackTrace();
-			throw new InternalServerErrorException(e3);
+		} catch (NotFoundException e) {
+			throw new NotFoundException(e);
+		} catch (TooManyItemsException e) {
+			throw new ForbiddenException("Too many items in bookshelf");
+		} catch (BadRequestException e) {
+			throw new BadRequestException(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new InternalServerErrorException(e);
 		}
 	    	
 	}
 	
 	@DELETE
 	@Path("/bookshelves/{id}/items/{tid}")
-    @ApiOperation(value = "deleteItemFromBokkshelf", notes = "delete an item from a bookshelf"
+    @ApiOperation(value = "deleteItemFromBookshelf", notes = "delete an item from a bookshelf"
 	)
     @ApiResponses(value = {
     		@ApiResponse(code = 204, message = "OK", response = Item.class),
@@ -531,5 +561,31 @@ public class BiblioResources {
 			throw new NotFoundException();
 		return;
 	}
+	
+	@GET
+	@Path("/requestsCount")
+	@ApiOperation(value = "getTotalItemsRequestsCount", notes = "get total number of readings for all items")
+    @ApiResponses(value = {
+    		@ApiResponse(code = 200, message = "OK"),
+    		})
+	@Produces({MediaType.TEXT_PLAIN})
+	public int getTotalItemsRequestsCount() {
+		return service.getCounterTotValue();
+	}	
+	
+	@GET
+	@Path("/requestsCount/{id}")
+	@ApiOperation(value = "getItemRequestsCount", notes = "get number of readings for an item")
+    @ApiResponses(value = {
+    		@ApiResponse(code = 200, message = "OK"),
+    		@ApiResponse(code = 404, message = "Not Found"),
+    		})
+	@Produces({MediaType.TEXT_PLAIN})
+	public int getItemRequestsCount(	
+			@ApiParam("The id of the item") @PathParam("id")  BigInteger id) {
+		int value = service.getCounterValue(id);
+		if (value == -1) throw new NotFoundException();
+		return value;
+	}	
 	
 }
