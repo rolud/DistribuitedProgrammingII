@@ -1,12 +1,12 @@
 package it.polito.dp2.BIB.sol3.resources;
 
 import it.polito.dp2.BIB.sol3.service.jaxb.*;
-import it.polito.dp2.BIB.ass3.TooManyItemsException;
 import it.polito.dp2.BIB.sol3.model.EBiblio;
 import it.polito.dp2.BIB.sol3.service.BadRequestServiceException;
 import it.polito.dp2.BIB.sol3.service.BiblioService;
 import it.polito.dp2.BIB.sol3.service.ConflictServiceException;
 import it.polito.dp2.BIB.sol3.service.SearchScope;
+import it.polito.dp2.BIB.sol3.service.TooManyItemsServiceException;
 
 import java.math.BigInteger;
 import java.net.URI;
@@ -505,7 +505,6 @@ public class BiblioResources {
 	)
     @ApiResponses(value = {
     		@ApiResponse(code = 201, message = "Created", response = Bookshelf.class),
-    		@ApiResponse(code = 400, message = "Bad Request"),
     		@ApiResponse(code = 403, message = "Forbidden (too many items in bookshelf)"),
 			@ApiResponse(code = 404, message = "Not Found"),
     		})
@@ -513,15 +512,8 @@ public class BiblioResources {
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	public Response addItemToBookshelf(
 			@ApiParam("The id of the bookshelf") @PathParam("id") BigInteger id,
-			@ApiParam("The id of the item") @PathParam("tid") BigInteger tid,
-			Item item) throws Exception {
+			@ApiParam("The id of the item") @PathParam("tid") BigInteger tid) throws Exception {
 		
-		Item itemFromDB = service.getItem(tid);
-		if (itemFromDB == null) throw new NotFoundException();
-		System.out.println("RESOURCES ---  DB ITEM " + itemFromDB.getSelf());
-		System.out.println("RESOURCES --- PUT ITEM " + item.getSelf());
-		if (!itemFromDB.getSelf().equals(item.getSelf()))
-	    	throw new BadRequestException();
 	    Item returnItem;
 		try {
 			returnItem = service.addItemToBookshelf(id, tid);
@@ -529,7 +521,7 @@ public class BiblioResources {
 			return Response.created(new URI(returnItem.getSelf())).entity(returnItem).build();
 		} catch (NotFoundException e) {
 			throw new NotFoundException(e);
-		} catch (TooManyItemsException e) {
+		} catch (TooManyItemsServiceException e) {
 			throw new ForbiddenException("Too many items in bookshelf");
 		} catch (BadRequestException e) {
 			throw new BadRequestException(e);
@@ -563,26 +555,15 @@ public class BiblioResources {
 	}
 	
 	@GET
-	@Path("/requestsCount")
-	@ApiOperation(value = "getTotalItemsRequestsCount", notes = "get total number of readings for all items")
-    @ApiResponses(value = {
-    		@ApiResponse(code = 200, message = "OK"),
-    		})
-	@Produces({MediaType.TEXT_PLAIN})
-	public int getTotalItemsRequestsCount() {
-		return service.getCounterTotValue();
-	}	
-	
-	@GET
-	@Path("/requestsCount/{id}")
-	@ApiOperation(value = "getItemRequestsCount", notes = "get number of readings for an item")
+	@Path("/bookshelves/{id}/numberOfReads")
+	@ApiOperation(value = "getNumberOfReads", notes = "get number of reads for a bookshelf")
     @ApiResponses(value = {
     		@ApiResponse(code = 200, message = "OK"),
     		@ApiResponse(code = 404, message = "Not Found"),
     		})
 	@Produces({MediaType.TEXT_PLAIN})
-	public int getItemRequestsCount(	
-			@ApiParam("The id of the item") @PathParam("id")  BigInteger id) {
+	public int getNumberOfReads(	
+			@ApiParam("The id of the bookshelf") @PathParam("id")  BigInteger id) {
 		int value = service.getCounterValue(id);
 		if (value == -1) throw new NotFoundException();
 		return value;

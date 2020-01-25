@@ -15,7 +15,6 @@ import it.polito.dp2.BIB.sol3.service.util.ResourseUtils;
 public class CounterFilter implements ContainerRequestFilter{
 
 	CounterImpl counter;
-	Logger logger = Logger.getLogger(CounterFilter.class.getName());
 	
 	public CounterFilter() {
 		counter = CounterImpl.getCounter();
@@ -23,11 +22,9 @@ public class CounterFilter implements ContainerRequestFilter{
 
 	@Override
 	public void filter(ContainerRequestContext context) throws IOException {
-		if (context.getMethod().equals("GET") && ResourseUtils.isItemRequest(context.getUriInfo().getAbsolutePath().toString())) {
-			long id = ResourseUtils.getItemId(context.getUriInfo().getAbsolutePath().toString());
-			counter.incrementTot();
+		if (context.getMethod().equals("GET") && ResourseUtils.isBookshelfReadRequest(context.getUriInfo().getAbsolutePath().toString())) {
+			long id = ResourseUtils.resolveBookshelfId(context.getUriInfo().getAbsolutePath().toString());
 			counter.increment(BigInteger.valueOf(id));
-			logger.log(Level.INFO, "INCREMENTED ITEM " + id);
 		}
 	}
 

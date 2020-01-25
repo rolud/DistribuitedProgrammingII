@@ -19,6 +19,7 @@ public class ItemReaderImpl implements it.polito.dp2.BIB.ass3.ItemReader {
 	
 	
 	public ItemReaderImpl(Item i) {
+		this.id = resolveId(i.getSelf());
 		this.title = i.getTitle();
 		if (i.getSubtitle() != null)
 			this.subtitle = i.getSubtitle();
@@ -71,5 +72,17 @@ public class ItemReaderImpl implements it.polito.dp2.BIB.ass3.ItemReader {
 			sb.append(i.getTitle()+" ");
 		}
 		return sb.toString();
+	}
+	
+	public static int resolveId(String self) {
+		String[] tokens = self.split("items/");
+		if (tokens.length != 2) return -1;
+		int id;
+		try {
+			id = Integer.parseInt(tokens[1]);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+		return id;
 	}
 }

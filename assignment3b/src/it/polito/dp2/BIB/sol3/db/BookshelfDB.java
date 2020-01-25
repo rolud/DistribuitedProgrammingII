@@ -106,7 +106,7 @@ public class BookshelfDB {
 	}
 	
 	private void removeFromIndex(String token, long id) {
-		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(token);
+		ConcurrentHashMap<Long, Bookshelf> map = bookshelvesByKeyword.get(token.toLowerCase());
 		if (map != null) {
 			map.remove(id);
 		}

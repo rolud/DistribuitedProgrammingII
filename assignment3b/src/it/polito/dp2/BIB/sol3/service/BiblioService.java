@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.ws.rs.core.UriInfo;
 
-import it.polito.dp2.BIB.ass3.TooManyItemsException;
 import it.polito.dp2.BIB.sol3.db.BadRequestInOperationException;
 import it.polito.dp2.BIB.sol3.db.BookshelfDB;
 import it.polito.dp2.BIB.sol3.db.ConflictInOperationException;
@@ -33,7 +32,6 @@ public class BiblioService {
 		rutil = new ResourseUtils((uriInfo.getBaseUriBuilder()));
 		try {
 			ItemPage itemPage = n4jDb.getItems(SearchScope.ALL, "", 10000, 0, BigInteger.valueOf(1));
-			counter.initCounter(itemPage.getMap().keySet());	
 		} catch (Exception e) {}
 	}
 	
@@ -75,16 +73,13 @@ public class BiblioService {
 		if (id==null)
 			throw new Exception("Null id");
 		rutil.completeItem(item, id);
-		counter.initCounter(id);
 		return item;
 	}
 
 	public synchronized BigInteger deleteItem(BigInteger id) throws ConflictServiceException, Exception {
 		try {
 			BigInteger deletedId = n4jDb.deleteItem(id);
-			System.out.println("DELETED " + deletedId);
 			if (deletedId != null) {
-				counter.deleteCounter(id);
 				bsDB.deleteItemFromAllBookshelves(id);
 			}
 			return deletedId;
@@ -156,6 +151,7 @@ public class BiblioService {
 		if (b == null)
 			throw new Exception("null id");
 		rutil.completeBookshelf(bookshelf, BigInteger.valueOf(id));
+		counter.initCounter(BigInteger.valueOf(id));
 		return bookshelf;
 	}
 	
@@ -187,7 +183,9 @@ public class BiblioService {
 	}
 	
 	public BigInteger deleteBookshelf(BigInteger id) throws Exception {
-		return bsDB.deleteBookshelf(id);	
+		BigInteger deletedId = bsDB.deleteBookshelf(id);
+		if (deletedId != null) counter.deleteCounter(deletedId);
+		return deletedId;	
 	}
 	
 	public Items getBookshelfItems(BigInteger id) throws Exception {
@@ -215,24 +213,16 @@ public class BiblioService {
 	public Item addItemToBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		Item item = n4jDb.getItem(itemId);
 		Bookshelf bookshelf = bsDB.getBookshelf(bookshelfId);
-		System.out.println("--- FROM SERVICE --- BOOKSHELF " + bookshelfId + " ITEM " + itemId);
-		System.out.println("     ITEM STATUS " + item);
-		System.out.println("BOOKSHELF STATUS " + bookshelf);
 		if (item == null || bookshelf == null) return null;
 		Item ret = bsDB.addItemToBookshelf(bookshelfId, itemId, item);
 		if (ret == null) 
-			throw new TooManyItemsException();
+			throw new TooManyItemsServiceException();
 		rutil.completeItem(ret, itemId);
 		return ret;
 	}
 	
 	public Item deleteItemFromBookshelf(BigInteger bookshelfId, BigInteger itemId) throws Exception {
 		return bsDB.deleteItemFromBookshelf(bookshelfId, itemId);
-	}
-	
-
-	public int getCounterTotValue() {
-		return counter.getCounterTotValue();
 	}
 	
 	public int getCounterValue(BigInteger id) {

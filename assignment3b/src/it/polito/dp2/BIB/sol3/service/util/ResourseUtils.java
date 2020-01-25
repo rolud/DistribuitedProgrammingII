@@ -2,6 +2,7 @@ package it.polito.dp2.BIB.sol3.service.util;
 
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.StringTokenizer;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -47,22 +48,29 @@ public class ResourseUtils {
 		bookshelf.setItems(items.toString());
 	}
 	
-	public static long getItemId(String url) {
-		String[] tokens = url.split("items/");
-		if (tokens.length != 2) return -1;
-		long id;
+	public static long resolveBookshelfId(String url) {
+		long id = -1;
 		try {
-			id = Long.parseLong(tokens[1]);
+			StringTokenizer st = new StringTokenizer(url, "/");
+				while(st.hasMoreTokens()) {
+				String token = st.nextToken();
+				if (token.equals("bookshelves")) {
+					String idString = st.nextToken();
+					id = Long.parseLong(idString);
+				}
+			}	
 		} catch (NumberFormatException e) {
 			return -1;
 		}
 		return id;
 	}
 	
-	public static boolean isItemRequest(String requestUrl) {
-		String pattern = "[a-zA-Z0-9/:]+items/[0-9]+(/)?$";
+	public static boolean isBookshelfReadRequest(String requestUrl) {
+		String pattern = "[a-zA-Z0-9/:]+bookshelves/[0-9]+(/(items(/[0-9]*)?)?)?$";
 		if (requestUrl.matches(pattern)) return true;
 		return false;
 	}
+	
+	
 
 }

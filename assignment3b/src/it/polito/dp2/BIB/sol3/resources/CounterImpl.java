@@ -16,12 +16,9 @@ public class CounterImpl {
 	
 	private static CounterImpl counterInstance;
 	
-	private AtomicInteger counterTot;
 	private ConcurrentHashMap<BigInteger, AtomicInteger> counterMap;
 	
-	
 	private CounterImpl() {
-		counterTot = new AtomicInteger(0);
 		counterMap = new ConcurrentHashMap<>();
 	}
 	
@@ -36,21 +33,10 @@ public class CounterImpl {
 		counterMap.putIfAbsent(id,  counter);
 	}
 	
-	public synchronized void initCounter(Set<BigInteger> itemsSet) {
-		for(BigInteger id : itemsSet) {
-			AtomicInteger counter = new AtomicInteger(0);
-			counterMap.putIfAbsent(id, counter);
-		}
-	}
-	
 	public synchronized int getCounterValue(BigInteger id) {
 		AtomicInteger counter = counterMap.get(id);
 		if (counter == null) return -1;
 		return counter.get();
-	}
-
-	public int getCounterTotValue() {
-		return counterTot.get();
 	}
 	
 	public synchronized int increment(BigInteger id) {
@@ -59,9 +45,6 @@ public class CounterImpl {
 		return counter.incrementAndGet();
 	}
 	
-	public int incrementTot() {
-		return counterTot.incrementAndGet();
-	}
 	
 	public void deleteCounter(BigInteger id) {
 		counterMap.remove(id);
