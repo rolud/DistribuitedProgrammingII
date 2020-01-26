@@ -504,7 +504,7 @@ public class BiblioResources {
     @ApiOperation(value = "addItemToBookshelf", notes = "add an item to a bookshelf", response = Item.class
 	)
     @ApiResponses(value = {
-    		@ApiResponse(code = 201, message = "Created", response = Bookshelf.class),
+    		@ApiResponse(code = 201, message = "Created", response = Item.class),
     		@ApiResponse(code = 403, message = "Forbidden (too many items in bookshelf)"),
 			@ApiResponse(code = 404, message = "Not Found"),
     		})
